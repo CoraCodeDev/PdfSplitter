@@ -6,10 +6,18 @@ namespace PdfSplitter;
 
 public partial class App : Application
 {
+	private readonly AppShellViewModel _viewModel;
+
 	public App(AppShellViewModel viewModel)
 	{
 		InitializeComponent();
-        MainPage = new AppShell(viewModel);
-		MainPage.Title = $"PDF Splitter v{ ((AssemblyInformationalVersionAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault()).InformationalVersion }";
-    }
+		_viewModel = viewModel;
+	}
+
+	protected override Window CreateWindow(IActivationState activationState)
+	{
+		var shell = new AppShell(_viewModel);
+		shell.Title = $"PDF Splitter v{ ((AssemblyInformationalVersionAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault()).InformationalVersion }";
+		return new Window(shell);
+	}
 }

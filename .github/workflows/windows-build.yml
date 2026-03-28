@@ -15,11 +15,11 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 10.0.x
     - name: Install MAUI
       run: dotnet workload install maui
     - name: Decrypt Pfx
@@ -29,8 +29,8 @@ jobs:
     - name: Install Certificate
       run: certutil -user -q -p ${{ secrets.PDFSPLITTER_PWD }} -importpfx cert.pfx NoRoot
     - name: Build
-      run: dotnet publish PdfSplitter/PdfSplitter.csproj -c Release -f:net7.0-windows10.0.19041.0 /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=true /p:PackageCertificateThumbprint="${{ secrets.PDFSPLITTER_THUMB }}"    
+      run: dotnet publish PdfSplitter/PdfSplitter.csproj -c Release -f:net10.0-windows10.0.19041.0 /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=true /p:PackageCertificateThumbprint="${{ secrets.PDFSPLITTER_THUMB }}"    
     - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:  
         path: ./PdfSplitter/bin/Release/**/*.msix

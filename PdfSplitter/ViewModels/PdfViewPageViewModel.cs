@@ -39,7 +39,7 @@ namespace PdfSplitter.ViewModels
 
             await _savePdfService.SavePdf(_pdfService.PdfFilePath, file, _pdfService.SelectedItems.Select(x => x.PageNumber).ToList());
 
-            await App.Current.MainPage.DisplayAlert("Success", "File has been saved", "OK");
+            await App.Current.Windows[0].Page.DisplayAlertAsync("Success", "File has been saved", "OK");
             _pdfService.SelectedItems.Clear();
             NotifyPropertyChanged(() => DisplaySaveButton);
         }
