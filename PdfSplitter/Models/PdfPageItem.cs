@@ -15,9 +15,9 @@ namespace PdfSplitter.Models
 
         public bool Selected { get; set; }
 
-        public ImageSource Preview => ImageSource.FromStream(() => Task.Run(GeneratePreview).Result.AsStream());
+        public ImageSource Preview => ImageSource.FromStream(async (token) => (await GeneratePreview()).AsStream());
 
-        public ImageSource PageView => ImageSource.FromStream(() => Task.Run(GenerateView).Result.AsStream());
+        public ImageSource PageView => ImageSource.FromStream(async (token) => (await GenerateView()).AsStream());
 
         public async Task<InMemoryRandomAccessStream> GeneratePreview()
         {
