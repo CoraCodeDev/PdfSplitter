@@ -19,6 +19,11 @@ public class PdfService : IPdfService
     
     public async Task LoadPdf(string path)
     {
+        foreach (var item in Items)
+            item.Dispose();
+        foreach (var item in SelectedItems)
+            item.Dispose();
+
         SelectedItems.Clear();
         Items.Clear();
 
@@ -40,6 +45,11 @@ public class PdfService : IPdfService
 
     public void UnloadPdf()
     {
+        foreach (var item in Items)
+            item.Dispose();
+        foreach (var item in SelectedItems)
+            item.Dispose();
+
         Items.Clear();
         SelectedItems.Clear();
         _document = null;

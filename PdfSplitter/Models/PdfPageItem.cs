@@ -3,8 +3,10 @@ using Windows.Storage.Streams;
 
 namespace PdfSplitter.Models
 {
-    public class PdfPageItem
+    public class PdfPageItem : IDisposable
     {
+        private bool _disposed;
+
         public PdfPage Page {get;set;}
 
         public int PageNumber { get; set; }
@@ -43,6 +45,16 @@ namespace PdfSplitter.Models
             stream.Seek(0);
 
             return stream;
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Page?.Dispose();
+                Page = null;
+                _disposed = true;
+            }
         }
     }
 }
