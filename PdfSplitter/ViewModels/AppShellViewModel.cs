@@ -44,21 +44,28 @@ public class AppShellViewModel
 
 	public async Task SelectFile()
 	{        
-		var options = new PickOptions()
+		try
 		{
-			FileTypes = FilePickerFileType.Pdf
-		};
+			var options = new PickOptions()
+			{
+				FileTypes = FilePickerFileType.Pdf
+			};
 
-		var fileResult = await FilePicker.PickAsync(options);
+			var fileResult = await FilePicker.PickAsync(options);
 
-		if (fileResult != null)
+			if (fileResult != null)
+			{
+				await _pdfService.LoadPdf(fileResult.FullPath);
+
+				PdfOpen = true;
+				(OnMenuItemClosePdfClickedCommand as Command).ChangeCanExecute();
+				await Shell.Current.GoToAsync(nameof(PdfViewPage));
+			}
+		}
+		catch (Exception ex)
 		{
-			await _pdfService.LoadPdf(fileResult.FullPath);
-
-			PdfOpen = true;
-			(OnMenuItemClosePdfClickedCommand as Command).ChangeCanExecute();
-            await Shell.Current.GoToAsync(nameof(PdfViewPage));
-        }
+			await Shell.Current.DisplayAlert("Error", $"Failed to open PDF file.\n\n{ex.Message}", "OK");
+		}
 	}
 
     public async Task CloseFile()

@@ -3,8 +3,10 @@ using Windows.Storage.Streams;
 
 namespace PdfSplitter.Models
 {
-    public class PdfPageItem
+    public class PdfPageItem : IDisposable
     {
+        private bool _disposed;
+
         public PdfPage Page {get;set;}
 
         public int PageNumber { get; set; }
@@ -13,9 +15,9 @@ namespace PdfSplitter.Models
 
         public bool Selected { get; set; }
 
-        public ImageSource Preview => ImageSource.FromStream(() => Task.Run(GeneratePreview).Result.AsStream());
+        public ImageSource Preview => ImageSource.FromStream(async (token) => (await GeneratePreview()).AsStream());
 
-        public ImageSource PageView => ImageSource.FromStream(() => Task.Run(GenerateView).Result.AsStream());
+        public ImageSource PageView => ImageSource.FromStream(async (token) => (await GenerateView()).AsStream());
 
         public async Task<InMemoryRandomAccessStream> GeneratePreview()
         {
@@ -43,6 +45,16 @@ namespace PdfSplitter.Models
             stream.Seek(0);
 
             return stream;
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Page?.Dispose();
+                Page = null;
+                _disposed = true;
+            }
         }
     }
 }
