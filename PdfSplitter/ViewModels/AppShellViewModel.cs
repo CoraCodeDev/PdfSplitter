@@ -64,7 +64,7 @@ public class AppShellViewModel
 		}
 		catch (Exception ex)
 		{
-			await Shell.Current.DisplayAlert("Error", $"Failed to open PDF file.\n\n{ex.Message}", "OK");
+			await Shell.Current.DisplayAlertAsync("Error", $"Failed to open PDF file.\n\n{ex.Message}", "OK");
 		}
 	}
 

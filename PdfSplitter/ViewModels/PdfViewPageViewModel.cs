@@ -52,13 +52,13 @@ namespace PdfSplitter.ViewModels
 
                 await _savePdfService.SavePdf(_pdfService.PdfFilePath, file, _pdfService.SelectedItems.Select(x => x.PageNumber).ToList());
 
-                await App.Current.MainPage.DisplayAlert("Success", "File has been saved", "OK");
+                await App.Current.Windows[0].Page.DisplayAlertAsync("Success", "File has been saved", "OK");
                 _pdfService.SelectedItems.Clear();
                 NotifyPropertyChanged(() => DisplaySaveButton);
             }
             catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", $"Failed to save PDF file.\n\n{ex.Message}", "OK");
+                await App.Current.Windows[0].Page.DisplayAlertAsync("Error", $"Failed to save PDF file.\n\n{ex.Message}", "OK");
             }
         }
 
@@ -139,7 +139,7 @@ namespace PdfSplitter.ViewModels
         {
             if (string.IsNullOrWhiteSpace(PageRangeText))
             {
-                await App.Current.MainPage.DisplayAlert("Error", "Please enter a page range (e.g. 1-5, 10, 15-20)", "OK");
+                await App.Current.Windows[0].Page.DisplayAlertAsync("Error", "Please enter a page range (e.g. 1-5, 10, 15-20)", "OK");
                 return;
             }
 
@@ -147,7 +147,7 @@ namespace PdfSplitter.ViewModels
 
             if (pageNumbers == null)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "Invalid page range format. Use: 1-5, 10, 15-20", "OK");
+                await App.Current.Windows[0].Page.DisplayAlertAsync("Error", "Invalid page range format. Use: 1-5, 10, 15-20", "OK");
                 return;
             }
 
@@ -156,7 +156,7 @@ namespace PdfSplitter.ViewModels
 
             if (!validPages.Any())
             {
-                await App.Current.MainPage.DisplayAlert("Error", $"No valid pages in range. Document has pages 1-{maxPage}", "OK");
+                await App.Current.Windows[0].Page.DisplayAlertAsync("Error", $"No valid pages in range. Document has pages 1-{maxPage}", "OK");
                 return;
             }
 
@@ -164,7 +164,7 @@ namespace PdfSplitter.ViewModels
             SelectedPageItem = _pdfService.Items.FirstOrDefault();
             NotifyPropertyChanged(() => DisplaySaveButton);
 
-            await App.Current.MainPage.DisplayAlert("Success", $"Selected {validPages.Count} page(s)", "OK");
+            await App.Current.Windows[0].Page.DisplayAlertAsync("Success", $"Selected {validPages.Count} page(s)", "OK");
         }
 
         private static List<int> ParsePageRange(string input)
