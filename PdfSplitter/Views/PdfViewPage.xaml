@@ -9,14 +9,21 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="4*" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Controls:PdfPageContent Grid.Row="0" Grid.Column="0" Page="{Binding SelectedPageItem}" SelectPageCommand="{Binding OnItemSelectedCommand}" />
-        <Controls:PdfPages Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Pages="{Binding Items}" SelectedPage="{Binding SelectedPageItem, Mode=TwoWay}" />
+        <Controls:PdfPages Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" Pages="{Binding Items}" SelectedPage="{Binding SelectedPageItem, Mode=TwoWay}" />
         <Controls:PdfSelectedPages  Grid.Row="1" Grid.Column="0" SelectedPages="{Binding SelectedItems}" RemovePageCommand="{Binding OnItemRemovedCommand}" />
         <Controls:PdfSaveControl  Grid.Row="1" Grid.Column="0" SaveCommand="{Binding OnSaveFileCommand}" IsVisible="{Binding DisplaySaveButton}" VerticalOptions="End" />
+        <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Spacing="5" Padding="5">
+            <Button Text="Select All" Command="{Binding OnSelectAllCommand}" />
+            <Button Text="Deselect All" Command="{Binding OnDeselectAllCommand}" />
+            <Entry Placeholder="e.g. 1-5, 10, 15-20" Text="{Binding PageRangeText}" HorizontalOptions="FillAndExpand" MinimumWidthRequest="150" />
+            <Button Text="Apply" Command="{Binding OnApplyPageRangeCommand}" />
+        </HorizontalStackLayout>
     </Grid>
 </ContentPage>
