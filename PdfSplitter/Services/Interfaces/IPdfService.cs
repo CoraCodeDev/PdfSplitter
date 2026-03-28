@@ -16,6 +16,12 @@ namespace PdfSplitter.Services.Interfaces
 
         void UnselectItem(PdfPageItem item);
 
+        void SelectAll();
+
+        void DeselectAll();
+
+        void SelectPages(IEnumerable<int> pageNumbers);
+
         string PdfFilePath { get; }
     }
 }

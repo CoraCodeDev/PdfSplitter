@@ -19,6 +19,11 @@ public class PdfService : IPdfService
     
     public async Task LoadPdf(string path)
     {
+        foreach (var item in Items)
+            item.Dispose();
+        foreach (var item in SelectedItems)
+            item.Dispose();
+
         SelectedItems.Clear();
         Items.Clear();
 
@@ -40,6 +45,11 @@ public class PdfService : IPdfService
 
     public void UnloadPdf()
     {
+        foreach (var item in Items)
+            item.Dispose();
+        foreach (var item in SelectedItems)
+            item.Dispose();
+
         Items.Clear();
         SelectedItems.Clear();
         _document = null;
@@ -56,6 +66,39 @@ public class PdfService : IPdfService
         SelectedItems.Remove(item);
         Items.Add(item);
         Items = new ObservableCollection<PdfPageItem>(Items.OrderBy(x => x.PageNumber));
+    }
+
+    public void SelectAll()
+    {
+        var allItems = Items.ToList();
+        foreach (var item in allItems)
+        {
+            SelectedItems.Add(item);
+        }
+        Items.Clear();
+        SelectedItems = new ObservableCollection<PdfPageItem>(SelectedItems.OrderBy(x => x.PageNumber));
+    }
+
+    public void DeselectAll()
+    {
+        var allItems = SelectedItems.ToList();
+        foreach (var item in allItems)
+        {
+            Items.Add(item);
+        }
+        SelectedItems.Clear();
+        Items = new ObservableCollection<PdfPageItem>(Items.OrderBy(x => x.PageNumber));
+    }
+
+    public void SelectPages(IEnumerable<int> pageNumbers)
+    {
+        var pagesToSelect = Items.Where(x => pageNumbers.Contains(x.PageNumber)).ToList();
+        foreach (var item in pagesToSelect)
+        {
+            SelectedItems.Add(item);
+            Items.Remove(item);
+        }
+        SelectedItems = new ObservableCollection<PdfPageItem>(SelectedItems.OrderBy(x => x.PageNumber));
     }
 
     public ObservableCollection<PdfPageItem> SelectedItems { get; private set; }
