@@ -58,6 +58,39 @@ public class PdfService : IPdfService
         Items = new ObservableCollection<PdfPageItem>(Items.OrderBy(x => x.PageNumber));
     }
 
+    public void SelectAll()
+    {
+        var allItems = Items.ToList();
+        foreach (var item in allItems)
+        {
+            SelectedItems.Add(item);
+        }
+        Items.Clear();
+        SelectedItems = new ObservableCollection<PdfPageItem>(SelectedItems.OrderBy(x => x.PageNumber));
+    }
+
+    public void DeselectAll()
+    {
+        var allItems = SelectedItems.ToList();
+        foreach (var item in allItems)
+        {
+            Items.Add(item);
+        }
+        SelectedItems.Clear();
+        Items = new ObservableCollection<PdfPageItem>(Items.OrderBy(x => x.PageNumber));
+    }
+
+    public void SelectPages(IEnumerable<int> pageNumbers)
+    {
+        var pagesToSelect = Items.Where(x => pageNumbers.Contains(x.PageNumber)).ToList();
+        foreach (var item in pagesToSelect)
+        {
+            SelectedItems.Add(item);
+            Items.Remove(item);
+        }
+        SelectedItems = new ObservableCollection<PdfPageItem>(SelectedItems.OrderBy(x => x.PageNumber));
+    }
+
     public ObservableCollection<PdfPageItem> SelectedItems { get; private set; }
 
     public ObservableCollection<PdfPageItem> Items { get; private set; }
