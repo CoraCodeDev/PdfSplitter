@@ -26,22 +26,32 @@ namespace PdfSplitter.ViewModels
 
         private async Task OnSaveClicked(string s)
         {
-            var window = new Microsoft.UI.Xaml.Window();
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+            try
+            {
+                var window = new Microsoft.UI.Xaml.Window();
+                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
 
-            FileSavePicker savePicker = new FileSavePicker();
-            savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-            savePicker.FileTypeChoices.Add("PDF Document", new List<string>() { ".pdf" });
-            savePicker.SuggestedFileName = $"New_Document_{DateTime.Now:ddMMyyyy_HHmmss}";
+                FileSavePicker savePicker = new FileSavePicker();
+                savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+                savePicker.FileTypeChoices.Add("PDF Document", new List<string>() { ".pdf" });
+                savePicker.SuggestedFileName = $"New_Document_{DateTime.Now:ddMMyyyy_HHmmss}";
 
-            WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
-            var file = await savePicker.PickSaveFileAsync();
+                WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
+                var file = await savePicker.PickSaveFileAsync();
 
-            await _savePdfService.SavePdf(_pdfService.PdfFilePath, file, _pdfService.SelectedItems.Select(x => x.PageNumber).ToList());
+                if (file == null)
+                    return;
 
-            await App.Current.MainPage.DisplayAlert("Success", "File has been saved", "OK");
-            _pdfService.SelectedItems.Clear();
-            NotifyPropertyChanged(() => DisplaySaveButton);
+                await _savePdfService.SavePdf(_pdfService.PdfFilePath, file, _pdfService.SelectedItems.Select(x => x.PageNumber).ToList());
+
+                await App.Current.MainPage.DisplayAlert("Success", "File has been saved", "OK");
+                _pdfService.SelectedItems.Clear();
+                NotifyPropertyChanged(() => DisplaySaveButton);
+            }
+            catch (Exception ex)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", $"Failed to save PDF file.\n\n{ex.Message}", "OK");
+            }
         }
 
         public ObservableCollection<PdfPageItem> Items => _pdfService.Items;
